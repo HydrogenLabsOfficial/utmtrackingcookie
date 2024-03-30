@@ -1,4 +1,7 @@
 
+// document.addEventListener('DOMContentLoaded', function() {
+(function($) {
+
 const Cookie = {
   read: function(name) {
     var nameEQ = name + "="
@@ -28,20 +31,21 @@ const Cookie = {
 
 const UTM = {
   onLoad: function() {
-    // Get the current URL
-    const currentUrl = window.location.href
     // Function to check if URL contains UTM parameters
-    const urlParams = new URLSearchParams(url)
+    const urlParams = new URLSearchParams(window.location.search)
     // Check if all UTM parameters are present
-    if (urlParams.has('utm_source') && urlParams.has('utm_medium') && urlParams.has('utm_campaign')) {
-      const utmValues = {
-        'source': urlParams.get('utm_source'),
-        'medium': urlParams.get('utm_medium'),
-        'campaign': urlParams.get('utm_campaign'),        
-      }
+    console.log('test2')
+    const utmValues = {
+      'source': urlParams.get('utm_source'),
+      'medium': urlParams.get('utm_medium'),
+      'campaign': urlParams.get('utm_campaign'),
+    }
+    if (utmValues.source && utmValues.medium && utmValues.campaign) {
       console.log('Source: ' + utmValues.source, 'Medium: ' + utmValues.medium, 'Campaign: ', utmValues.campaign)
-      Cookie.create('recoveryUTM', JSON.stringify(utmValues), 90)
-      Form.insertHiddenFieldValues('#form-field-utm_campaign', utmValues.campaign)
+      if (utmValues.source === 'rehabpath' && utmValues.medium === 'referral' && utmValues.campaign === 'luxuryrehab') {
+        Cookie.create('recoveryUTM', JSON.stringify(utmValues), 90)
+        Form.insertHiddenFieldValues('#form-field-utm_campaign', utmValues.campaign)
+      }
     }
   },
 }
@@ -53,13 +57,13 @@ const Form = {
       element.value = campaign
     }
   }
-},
+}
 
-window.onload = function() {
-  UTM.onLoad()
-  const cookie_recoveryUTM = Cookie.read('recoveryUTM')
-  if (cookie_recoveryUTM) {
-    const utmValues = JSON.parse(cookie_recoveryUTM)
-    Form.insertHiddenFieldValues('#form-field-utm_campaign', utmValues.campaign)    
-  }
-};
+UTM.onLoad()
+const cookie_recoveryUTM = Cookie.read('recoveryUTM')
+if (cookie_recoveryUTM) {
+  const utmValues = JSON.parse(cookie_recoveryUTM)
+  Form.insertHiddenFieldValues('#form-field-utm_campaign', utmValues.campaign)    
+}
+})(jQuery)
+// });
