@@ -79,22 +79,21 @@ const Links = {
     if (!Variables.emailAlias) {
       return
     }
-    $('body a').each(function() {
-      const url = $(this).attr('href')
-      console.log(url)
+    document.querySelectorAll('body a').forEach(function(element) {
+      const url = element.getAttribute('href')
       if (url.includes('mailto')) {
         const email = url.replace('mailto:', '')
-        $(this).attr('href', Links.addAliasToEmail(email, Variables.emailAlias))
+        const modifiedEmail = addAliasToEmail(email, Variables.emailAlias)
+        element.setAttribute('href', modifiedEmail)
       }
     })
   },
   addAliasToEmail: function (email, alias) {
-    console.log(email)
     // Split the email address into local part and domain part
     const parts = email.split('@')
     // Check if the email is in valid format
     if (parts.length !== 2) {
-      console.log('Invalid email format.')
+      console.error('Invalid email format.')
       return
     }
     // Insert the alias just before the domain part
