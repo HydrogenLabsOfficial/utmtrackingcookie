@@ -2,6 +2,21 @@
 // document.addEventListener('DOMContentLoaded', function() {
 (function($) {
 
+const Variables = {
+  // UTM values to match
+  utm: {
+    source: 'rehabpath',
+    medium: 'referral',
+    campaign: 'luxuryrehab',
+  },
+  // Cookie name to check
+  cookieName: 'recoveryUTM',
+  // Hidden Form field
+  hiddenFormField: '#form-field-utm_campaign',
+  // Email alias to append
+  emailAlias: '+recovery',
+}
+
 const Cookie = {
   read: function(name) {
     var nameEQ = name + "="
@@ -41,9 +56,9 @@ const UTM = {
     }
     if (utmValues.source && utmValues.medium && utmValues.campaign) {
       // console.log('Source: ' + utmValues.source, 'Medium: ' + utmValues.medium, 'Campaign: ', utmValues.campaign)
-      if (utmValues.source === 'rehabpath' && utmValues.medium === 'referral' && utmValues.campaign === 'luxuryrehab') {
-        Cookie.create('recoveryUTM', JSON.stringify(utmValues), 90)
-        Form.insertHiddenFieldValues('#form-field-utm_campaign', utmValues.campaign)
+      if (utmValues.source === Variables.utm.source && utmValues.medium === Variables.utm.medium && utmValues.campaign === Variables.utm.campaign) {
+        Cookie.create(Variables.cookieName, JSON.stringify(utmValues), 90)
+        Form.insertHiddenFieldValues(Variables.hiddenFormField, utmValues.campaign)
         Links.onLoad()
       }
     }
@@ -51,7 +66,7 @@ const UTM = {
 }
 
 const Form = {
-  insertHiddenFieldValues: function(elementQuery = '#form-field-utm_campaign', campaign) {
+  insertHiddenFieldValues: function(elementQuery = '', campaign = '') {
     const element = document.querySelector(elementQuery)
     if (element && element !== null) {
       element.value = campaign
@@ -61,12 +76,15 @@ const Form = {
 
 const Links = {
   onLoad: function() {
+    if (!Variables.emailAlias) {
+      return
+    }
     $('body a').each(function() {
       const url = $(this).attr('href')
       console.log(url)
       if (url.includes('mailto')) {
         const email = url.replace('mailto:', '')
-        $(this).attr('href', Links.addAliasToEmail(email, '+recovery'))
+        $(this).attr('href', Links.addAliasToEmail(email, Variables.emailAlias))
       }
     })
   },
@@ -86,11 +104,13 @@ const Links = {
 }
 
 UTM.onLoad()
-const cookie_recoveryUTM = Cookie.read('recoveryUTM')
+const cookie_recoveryUTM = Cookie.read(cookieName)
 if (cookie_recoveryUTM) {
   const utmValues = JSON.parse(cookie_recoveryUTM)
-  Form.insertHiddenFieldValues('#form-field-utm_campaign', utmValues.campaign)
-  Links.onLoad()
+  if (utmValues.campaign) {
+    Form.insertHiddenFieldValues(Variables.hiddenFormField, utmValues.campaign)
+    Links.onLoad()
+  }
 }
 })(jQuery)
 // });
