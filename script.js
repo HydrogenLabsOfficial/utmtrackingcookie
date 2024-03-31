@@ -15,6 +15,11 @@ const Variables = {
   hiddenFormField: '#form-field-utm_campaign',
   // Email alias to append
   emailAlias: '+recovery',
+
+  phoneNumbersToReplace: {
+    '+41583605500':'+1111111111',
+    '41763041558':'1111111111'
+  },
 }
 
 const Cookie = {
@@ -76,15 +81,36 @@ const Form = {
 
 const Links = {
   onLoad: function() {
-    if (!Variables.emailAlias) {
+    if (!Variables.emailAlias && !Variables.phoneNumbersToReplace) {
       return
     }
     document.querySelectorAll('body a').forEach(function(element) {
-      const url = element.getAttribute('href')
-      if (url.includes('mailto')) {
-        const email = url.replace('mailto:', '')
+      const href = element.getAttribute('href')
+      if (href.includes('mailto')) {
+        const email = href.replace('mailto:', '')
         const modifiedEmail = addAliasToEmail(email, Variables.emailAlias)
         element.setAttribute('href', modifiedEmail)
+      }
+      if (href.startsWith('tel:')) {
+        const tel = href.replace('tel:', '')
+        const phoneNumberToReplace = Variables.phoneNumbersToReplace[tel]
+        if (phoneNumberToReplace) {
+          element.setAttribute('href', 'tel:'+phoneNumberToReplace)
+          element.innerHTML = phoneNumberToReplace
+        }
+      }
+      
+      for (const key in Variables.phoneNumbersToReplace) {
+        if (Object.hasOwnProperty.call(Variables.phoneNumbersToReplace, key)) {
+          const phoneNumberToReplace = Variables.phoneNumbersToReplace[key];
+          if (href.startsWith('https://wa.me/'+key)) {
+            const whatsappUrl = new URL(href);
+            whatsappUrl.searchParams.set('text', 'Message I was referred by '+Variables.utm.campaign);
+            whatsappUrl.pathname = phoneNumberToReplace
+            element.setAttribute('href', whatsappUrl.href)
+            element.innerHTML = phoneNumberToReplace
+          }
+        }
       }
     })
   },
@@ -99,7 +125,7 @@ const Links = {
     // Insert the alias just before the domain part
     const modifiedEmail = parts[0] + alias + '@' + parts[1]
     return 'mailto:' + modifiedEmail
-  },
+  }
 }
 
 UTM.onLoad()
