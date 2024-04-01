@@ -13,24 +13,24 @@ var Variables = {
   emailAlias: '+recovery',
 
   phoneNumbersToReplace: {
-    '+41583605500': '+1111111111',
-    '41763041558': '1111111111'
+    '+12312312345': '+1111111111',
+    '12312312345': '1111111111'
   },
 };
 
 var Cookie = {
-  read(name) {
+  read: function(name) {
     var nameEQ = name + "=";
     var ca = document.cookie.split(';');
-    for (let i = 0; i < ca.length; i++) {
-      let c = ca[i];
+    for (var i = 0; i < ca.length; i++) {
+      var c = ca[i];
       while (c.charAt(0) === ' ') c = c.substring(1, c.length);
       if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
     }
     return null;
   },
-  create(name, value, days) {
-    let expires = "";
+  create: function(name, value, days) {
+    var expires = "";
     if (days) {
       var date = new Date();
       date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
@@ -38,13 +38,13 @@ var Cookie = {
     }
     document.cookie = name + "=" + value + expires + "; path=/";
   },
-  erase(name) {
+  erase: function(name) {
     this.create(name, "", -1);
   },
 };
 
 var UTM = {
-  onLoad() {
+  onLoad: function() {
     // Function to check if URL contains UTM parameters
     var urlParams = new URLSearchParams(window.location.search);
     // Check if all UTM parameters are present
@@ -65,7 +65,7 @@ var UTM = {
 };
 
 var Form = {
-  insertHiddenFieldValues(elementQuery = '', campaign = '') {
+  insertHiddenFieldValues: function(elementQuery, campaign) {
     var element = document.querySelector(elementQuery);
     if (element && element !== null) {
       element.value = campaign;
@@ -74,14 +74,14 @@ var Form = {
 };
 
 var Links = {
-  onLoad() {
+  onLoad: function() {
     if (!Variables.emailAlias && !Variables.phoneNumbersToReplace) {
       return;
     }
     document.querySelectorAll('body a').forEach(function(element) {
       var href = element.getAttribute('href');
       if (Variables.emailAlias) {
-        if (href.includes('mailto')) {
+        if (href.includes('mailto') && !href.includes(Variables.emailAlias)) {
           var email = href.replace('mailto:', '');
           var modifiedEmail = Links.addAliasToEmail(email, Variables.emailAlias);
           element.setAttribute('href', modifiedEmail);
@@ -113,7 +113,7 @@ var Links = {
       }
     });
   },
-  addAliasToEmail(email, alias) {
+  addAliasToEmail: function(email, alias) {
     // Split the email address into local part and domain part
     var parts = email.split('@');
     // Check if the email is in valid format
