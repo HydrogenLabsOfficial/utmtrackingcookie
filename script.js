@@ -88,7 +88,7 @@ const Links = {
       const href = element.getAttribute('href')
       if (href.includes('mailto')) {
         const email = href.replace('mailto:', '')
-        const modifiedEmail = addAliasToEmail(email, Variables.emailAlias)
+        const modifiedEmail = Links.addAliasToEmail(email, Variables.emailAlias)
         element.setAttribute('href', modifiedEmail)
       }
       if (href.startsWith('tel:')) {
@@ -137,5 +137,6 @@ if (cookie_recoveryUTM) {
     Links.onLoad()
   }
 }
+
 })(jQuery)
 // });
