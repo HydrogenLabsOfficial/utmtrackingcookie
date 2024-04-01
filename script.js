@@ -1,7 +1,3 @@
-
-// document.addEventListener('DOMContentLoaded', function() {
-(function($) {
-
 const Variables = {
   // UTM values to match
   utm: {
@@ -133,15 +129,15 @@ const Links = {
   }
 }
 
-UTM.onLoad()
-const cookie_recoveryUTM = Cookie.read(Variables.cookieName)
-if (cookie_recoveryUTM) {
-  const utmValues = JSON.parse(cookie_recoveryUTM)
-  if (utmValues.campaign) {
-    Form.insertHiddenFieldValues(Variables.hiddenFormField, utmValues.campaign)
-    Links.onLoad()
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOMContentLoaded YAA')
+  UTM.onLoad()
+  const cookie_recoveryUTM = Cookie.read(Variables.cookieName)
+  if (cookie_recoveryUTM) {
+    const utmValues = JSON.parse(cookie_recoveryUTM)
+    if (utmValues.campaign) {
+      Form.insertHiddenFieldValues(Variables.hiddenFormField, utmValues.campaign)
+      Links.onLoad()
+    }
   }
-}
-
-})(jQuery)
-// });
+}, false);
