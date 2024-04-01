@@ -93,9 +93,8 @@ const Links = {
           element.setAttribute('href', modifiedEmail)
         }
       }
-
       if (!Variables.phoneNumbersToReplace) {
-        return;
+        return
       }
       if (href.startsWith('tel:')) {
         const tel = href.replace('tel:', '')
@@ -143,5 +142,6 @@ if (cookie_recoveryUTM) {
     Links.onLoad()
   }
 }
+
 })(jQuery)
 // });
