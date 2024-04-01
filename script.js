@@ -86,10 +86,16 @@ const Links = {
     }
     document.querySelectorAll('body a').forEach(function(element) {
       const href = element.getAttribute('href')
-      if (href.includes('mailto')) {
-        const email = href.replace('mailto:', '')
-        const modifiedEmail = addAliasToEmail(email, Variables.emailAlias)
-        element.setAttribute('href', modifiedEmail)
+      if (Variables.emailAlias) {
+        if (href.includes('mailto')) {
+          const email = href.replace('mailto:', '')
+          const modifiedEmail = addAliasToEmail(email, Variables.emailAlias)
+          element.setAttribute('href', modifiedEmail)
+        }
+      }
+
+      if (!Variables.phoneNumbersToReplace) {
+        return;
       }
       if (href.startsWith('tel:')) {
         const tel = href.replace('tel:', '')
