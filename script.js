@@ -89,7 +89,7 @@ const Links = {
       if (Variables.emailAlias) {
         if (href.includes('mailto')) {
           const email = href.replace('mailto:', '')
-          const modifiedEmail = addAliasToEmail(email, Variables.emailAlias)
+          const modifiedEmail = Links.addAliasToEmail(email, Variables.emailAlias)
           element.setAttribute('href', modifiedEmail)
         }
       }
