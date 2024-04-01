@@ -83,7 +83,7 @@ const Links = {
     document.querySelectorAll('body a').forEach(function(element) {
       const href = element.getAttribute('href')
       if (Variables.emailAlias) {
-        if (href.includes('mailto')) {
+        if (href.includes('mailto') && !href.includes(Variables.emailAlias)) {
           const email = href.replace('mailto:', '')
           const modifiedEmail = Links.addAliasToEmail(email, Variables.emailAlias)
           element.setAttribute('href', modifiedEmail)
