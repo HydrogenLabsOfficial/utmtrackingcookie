@@ -130,16 +130,12 @@ const Links = {
 }
 
 document.addEventListener('readystatechange', function() {
-  console.log('readystatechange YAA')
   UTM.onLoad()
   const cookie_recoveryUTM = Cookie.read(Variables.cookieName)
   if (cookie_recoveryUTM) {
     const utmValues = JSON.parse(cookie_recoveryUTM)
     if (utmValues.campaign) {
-      setTimeout(
-        function() {
-          Form.insertHiddenFieldValues(Variables.hiddenFormField, utmValues.campaign)
-      }, 2000);
+      Form.insertHiddenFieldValues(Variables.hiddenFormField, utmValues.campaign)
       Links.onLoad()
     }
   }
