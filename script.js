@@ -135,7 +135,7 @@ const Links = {
 }
 
 UTM.onLoad()
-const cookie_recoveryUTM = Cookie.read(cookieName)
+const cookie_recoveryUTM = Cookie.read(Variables.cookieName)
 if (cookie_recoveryUTM) {
   const utmValues = JSON.parse(cookie_recoveryUTM)
   if (utmValues.campaign) {
