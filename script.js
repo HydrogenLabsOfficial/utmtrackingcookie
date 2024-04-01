@@ -129,14 +129,17 @@ const Links = {
   }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('DOMContentLoaded YAA')
+document.addEventListener('readystatechange', function() {
+  console.log('readystatechange YAA')
   UTM.onLoad()
   const cookie_recoveryUTM = Cookie.read(Variables.cookieName)
   if (cookie_recoveryUTM) {
     const utmValues = JSON.parse(cookie_recoveryUTM)
     if (utmValues.campaign) {
-      Form.insertHiddenFieldValues(Variables.hiddenFormField, utmValues.campaign)
+      setTimeout(
+        function() {
+          Form.insertHiddenFieldValues(Variables.hiddenFormField, utmValues.campaign)
+      }, 2000);
       Links.onLoad()
     }
   }
