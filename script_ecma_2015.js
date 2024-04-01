@@ -1,4 +1,4 @@
-const Variables = {
+var Variables = {
   // UTM values to match
   utm: {
     source: 'rehabpath',
@@ -18,10 +18,10 @@ const Variables = {
   },
 };
 
-const Cookie = {
+var Cookie = {
   read(name) {
-    const nameEQ = name + "=";
-    const ca = document.cookie.split(';');
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
     for (let i = 0; i < ca.length; i++) {
       let c = ca[i];
       while (c.charAt(0) === ' ') c = c.substring(1, c.length);
@@ -32,7 +32,7 @@ const Cookie = {
   create(name, value, days) {
     let expires = "";
     if (days) {
-      const date = new Date();
+      var date = new Date();
       date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
       expires = "; expires=" + date.toGMTString();
     }
@@ -43,12 +43,12 @@ const Cookie = {
   },
 };
 
-const UTM = {
+var UTM = {
   onLoad() {
     // Function to check if URL contains UTM parameters
-    const urlParams = new URLSearchParams(window.location.search);
+    var urlParams = new URLSearchParams(window.location.search);
     // Check if all UTM parameters are present
-    const utmValues = {
+    var utmValues = {
       'source': urlParams.get('utm_source'),
       'medium': urlParams.get('utm_medium'),
       'campaign': urlParams.get('utm_campaign'),
@@ -64,26 +64,26 @@ const UTM = {
   },
 };
 
-const Form = {
+var Form = {
   insertHiddenFieldValues(elementQuery = '', campaign = '') {
-    const element = document.querySelector(elementQuery);
+    var element = document.querySelector(elementQuery);
     if (element && element !== null) {
       element.value = campaign;
     }
   }
 };
 
-const Links = {
+var Links = {
   onLoad() {
     if (!Variables.emailAlias && !Variables.phoneNumbersToReplace) {
       return;
     }
     document.querySelectorAll('body a').forEach(function(element) {
-      const href = element.getAttribute('href');
+      var href = element.getAttribute('href');
       if (Variables.emailAlias) {
         if (href.includes('mailto')) {
-          const email = href.replace('mailto:', '');
-          const modifiedEmail = Links.addAliasToEmail(email, Variables.emailAlias);
+          var email = href.replace('mailto:', '');
+          var modifiedEmail = Links.addAliasToEmail(email, Variables.emailAlias);
           element.setAttribute('href', modifiedEmail);
         }
       }
@@ -91,19 +91,19 @@ const Links = {
         return;
       }
       if (href.startsWith('tel:')) {
-        const tel = href.replace('tel:', '');
-        const phoneNumberToReplace = Variables.phoneNumbersToReplace[tel];
+        var tel = href.replace('tel:', '');
+        var phoneNumberToReplace = Variables.phoneNumbersToReplace[tel];
         if (phoneNumberToReplace) {
           element.setAttribute('href', 'tel:' + phoneNumberToReplace);
           element.innerHTML = phoneNumberToReplace;
         }
       }
 
-      for (const key in Variables.phoneNumbersToReplace) {
+      for (var key in Variables.phoneNumbersToReplace) {
         if (Object.hasOwnProperty.call(Variables.phoneNumbersToReplace, key)) {
-          const phoneNumberToReplace = Variables.phoneNumbersToReplace[key];
+          var phoneNumberToReplace = Variables.phoneNumbersToReplace[key];
           if (href.startsWith('https://wa.me/' + key)) {
-            const whatsappUrl = new URL(href);
+            var whatsappUrl = new URL(href);
             whatsappUrl.searchParams.set('text', 'Message I was referred by ' + Variables.utm.campaign);
             whatsappUrl.pathname = phoneNumberToReplace;
             element.setAttribute('href', whatsappUrl.href);
@@ -115,14 +115,14 @@ const Links = {
   },
   addAliasToEmail(email, alias) {
     // Split the email address into local part and domain part
-    const parts = email.split('@');
+    var parts = email.split('@');
     // Check if the email is in valid format
     if (parts.length !== 2) {
       console.error('Invalid email format.');
       return;
     }
     // Insert the alias just before the domain part
-    const modifiedEmail = parts[0] + alias + '@' + parts[1];
+    var modifiedEmail = parts[0] + alias + '@' + parts[1];
     return 'mailto:' + modifiedEmail;
   }
 };
@@ -130,9 +130,9 @@ const Links = {
 document.addEventListener('readystatechange', function() {
   if (document.readyState === 'complete') {
     UTM.onLoad();
-    const cookie_recoveryUTM = Cookie.read(Variables.cookieName);
+    var cookie_recoveryUTM = Cookie.read(Variables.cookieName);
     if (cookie_recoveryUTM) {
-      const utmValues = JSON.parse(cookie_recoveryUTM);
+      var utmValues = JSON.parse(cookie_recoveryUTM);
       if (utmValues.campaign) {
         Form.insertHiddenFieldValues(Variables.hiddenFormField, utmValues.campaign);
         Links.onLoad();
